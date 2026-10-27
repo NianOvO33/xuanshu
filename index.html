@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#07080f">
+<title>玄枢 · 塔罗与东方占卜</title>
+<meta name="description" content="完整 78 张塔罗牌、九种经典牌阵、周易六爻、梅花易数、灵签求签。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230a0b16'/%3E%3Cpath d='M16 5l2.6 8.4L27 16l-8.4 2.6L16 27l-2.6-8.4L5 16l8.4-2.6z' fill='%23d9b978'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="stars"></div>
+
+
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">✧</span>
+    <h1>玄枢</h1>
+    <span class="brand-sub">TAROT · I CHING</span>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-view="tarot">塔罗占卜</button>
+    <button class="tab" data-view="iching">周易六爻</button>
+    <button class="tab" data-view="lots">灵签</button>
+    <button class="tab" data-view="cards">牌义库</button>
+  </nav>
+  <div class="tools">
+    <button class="icon-btn" id="aiBtn" title="AI 解读设置" aria-label="AI 解读设置">✦</button>
+    <button class="icon-btn" id="soundBtn" title="音效开关" aria-label="音效开关">♪</button>
+    <button class="icon-btn" id="recordBtn" title="占卜记录" aria-label="占卜记录">☰</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ 塔罗 ============ -->
+  <section class="view active" id="view-tarot">
+    <div class="layout">
+      <aside>
+        <div class="panel">
+          <div class="panel-title">提问</div>
+          <div class="field">
+            <label>你想问的事</label>
+            <textarea id="question" placeholder="例如：我该不该接受这份新工作？&#10;越具体的问题，牌面越清晰。"></textarea>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="revToggle" checked>
+            <span class="track"></span><span>启用逆位牌</span>
+          </label>
+          <button class="btn primary" id="startBtn">洗 牌 · 抽 牌</button>
+          <button class="btn ghost" id="resetBtn">重新开始</button>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">牌阵</div>
+          <div class="spread-list" id="spreadList"></div>
+          <p class="spread-desc" id="spreadDesc"></p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">今日之牌</div>
+          <div class="daily">
+            <div class="dcard" id="dailyCard"></div>
+            <p id="dailyTip">点击牌背，看看今天的能量</p>
+          </div>
+        </div>
+      </aside>
+
+      <div class="stage">
+        <div class="board-wrap" id="boardWrap">
+          <div class="board" id="board"></div>
+          <div class="shuffle-layer">
+            <div class="deck-anim"><i></i><i></i><i></i></div>
+            <p>洗 牌 中</p>
+          </div>
+        </div>
+        <div class="hint" id="hint">在左侧选择牌阵、写下问题，然后开始。</div>
+        <div class="reading" id="reading"></div>
+        <div id="aiOut"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 易经 ============ -->
+  <section class="view" id="view-iching">
+    <div class="iching-grid">
+      <aside>
+        <div class="panel">
+          <div class="seg" id="ichingSeg">
+            <button class="active" data-mode="coin">金钱卦</button>
+            <button data-mode="num">数字起卦</button>
+          </div>
+
+          <div class="mode active" id="mode-coin">
+            <div class="field">
+              <label>所问之事</label>
+              <input type="text" id="ichingQ" placeholder="例如：这个项目能否顺利推进？">
+            </div>
+            <div class="coins" id="coins">
+              <div class="coin">乾</div><div class="coin">乾</div><div class="coin">乾</div>
+            </div>
+            <div class="toss-status" id="tossStatus">第 1 爻 · 自下而上</div>
+            <button class="btn primary" id="tossBtn">摇 卦</button>
+            <button class="btn ghost" id="tossReset">重新起卦</button>
+            <p class="hex-tip">三枚铜钱掷六次，字为阴、背为阳。<br>六、九为动爻，会生出变卦。</p>
+          </div>
+
+          <div class="mode" id="mode-num">
+            <div class="field">
+              <label>天数</label>
+              <input type="number" id="numA" placeholder="任意整数" inputmode="numeric">
+            </div>
+            <div class="field">
+              <label>地数</label>
+              <input type="number" id="numB" placeholder="任意整数" inputmode="numeric">
+            </div>
+            <button class="btn primary" id="numBtn">起 卦</button>
+            <button class="btn ghost" id="numTime">用此刻时辰起卦</button>
+            <p class="hex-tip">梅花易数：上卦取天数、下卦取地数，动爻由两数之和定。心中默想所问之事，再取数。</p>
+          </div>
+        </div>
+      </aside>
+
+      <div class="stage">
+        <div class="panel">
+          <div class="hex-empty" id="hexEmpty">摇动六次铜钱，得一卦。<br>爻自下而上，初爻在最下。</div>
+          <div id="hexResult"></div>
+        </div>
+        <div id="hexAI"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 灵签 ============ -->
+  <section class="view" id="view-lots">
+    <div class="lots-grid">
+      <aside>
+        <div class="panel">
+          <div class="panel-title">求签</div>
+          <div class="field">
+            <label>心里默念的事</label>
+            <input type="text" id="lotQ" placeholder="可留空，填了 AI 解签会更准">
+          </div>
+          <div class="tube" id="tube">
+            <div class="stick"></div><div class="stick"></div>
+            <div class="stick"></div><div class="stick"></div>
+            <div class="body"></div>
+            <div class="rim"></div>
+            <div class="tag">签</div>
+          </div>
+          <button class="btn primary" id="lotBtn">摇 签</button>
+          <p class="hex-tip">默念所问之事，摇动签筒。<br>一签只问一事，一事只求一签。</p>
+          <div class="lot-list" id="lotList"></div>
+        </div>
+      </aside>
+      <div class="stage">
+        <div id="lotStage">
+          <div class="panel">
+            <div class="hex-empty">二十支灵签，等你摇动签筒。<br>心静则签准。</div>
+          </div>
+        </div>
+        <div id="lotAI"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 牌义库 ============ -->
+  <section class="view" id="view-cards">
+    <div class="lib-toolbar">
+      <div class="filters" id="libFilters">
+        <button class="filter active" data-f="all">全部 78</button>
+        <button class="filter" data-f="major">大牌 22</button>
+        <button class="filter" data-f="wands">权杖</button>
+        <button class="filter" data-f="cups">圣杯</button>
+        <button class="filter" data-f="swords">宝剑</button>
+        <button class="filter" data-f="pentacles">星币</button>
+      </div>
+      <input type="text" id="libSearch" placeholder="搜索牌名…">
+    </div>
+    <div class="lib-grid" id="libGrid"></div>
+  </section>
+
+</main>
+
+<footer>
+  <b>玄枢</b> · 塔罗 78 张 · 九种牌阵 · 周易六十四卦 · 灵签二十支<br>
+  所有解读供自我觉察与娱乐参考，不构成医疗、法律或投资建议。
+</footer>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose" aria-label="关闭">✕</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

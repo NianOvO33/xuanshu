@@ -1,0 +1,53 @@
+{
+  "name": "xuanshu",
+  "version": "1.0.0",
+  "description": "玄枢 · 塔罗与东方占卜 — 78 张塔罗牌、九种牌阵、周易六爻、灵签",
+  "main": "main.js",
+  "author": "玄枢",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "node scripts/sync.js && electron .",
+    "dist": "electron-builder --win portable --x64",
+    "sync": "node scripts/sync.js",
+    "predist": "node scripts/sync.js"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.xuanshu.oracle",
+    "productName": "玄枢",
+    "copyright": "Copyright © 2026 玄枢",
+    "asar": true,
+    "compression": "normal",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "app/**/*",
+      "build/icon.ico"
+    ],
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "Xuanshu-${version}-portable.${ext}",
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "Xuanshu-${version}-portable.${ext}",
+      "requestExecutionLevel": "user"
+    }
+  }
+}

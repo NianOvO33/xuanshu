@@ -1,0 +1,13 @@
+# 构建产物
+desktop/node_modules/
+desktop/dist/
+desktop/app/
+
+# 桌面版可执行文件体积较大，走 GitHub Releases，不进仓库
+*.exe
+
+# 本地笔记与缓存
+.workbuddy/
+.DS_Store
+Thumbs.db
+*.log
